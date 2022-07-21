@@ -8,7 +8,7 @@ const BlogList = (props) => {
   const [posts, setPost] = useState([])
   useEffect(() => {
     const getPostBlog = async () => {
-      const response = await fetch("http://localhost:3002/blogPosts")
+      const response = await fetch(`${process.env.REACT_APP_BE_URL}/blogPosts`)
       const data = await response.json()
       setPost(data)
     }

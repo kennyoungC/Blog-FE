@@ -17,7 +17,6 @@ const NewBlogPost = (props) => {
   const handleChange = useCallback((value) => {
     setNewBlog({ ...newBlog, content: value })
   })
- 
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -33,7 +32,7 @@ const NewBlogPost = (props) => {
     }
 
     try {
-      await fetch("http://localhost:3002/blogPosts", {
+      await fetch(`${process.env.REACT_APP_BE_URL}/blogPosts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

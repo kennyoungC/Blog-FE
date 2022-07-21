@@ -16,7 +16,9 @@ const Blog = (props) => {
 
   const getSingleBlog = async (id) => {
     try {
-      const response = await fetch("http://localhost:3002/blogPosts/" + id)
+      const response = await fetch(
+        `${process.env.REACT_APP_BE_URL}/blogPosts/${id}`
+      )
       const blog = await response.json()
       if (blog) {
         setBlog(blog)
@@ -39,7 +41,9 @@ const Blog = (props) => {
           <div className="d-flex justify-content-between align-items-center">
             {" "}
             <h1 className="blog-details-title">{blog.title}</h1>
-            <a href={`http://localhost:3002/blogPosts/${blog._id}/files/pdf`}>
+            <a
+              href={`${process.env.REACT_APP_BE_URL}/blogPosts/${blog._id}/files/pdf`}
+            >
               Download as Pdf
             </a>
           </div>

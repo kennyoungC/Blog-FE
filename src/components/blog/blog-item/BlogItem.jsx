@@ -35,7 +35,7 @@ const BlogItem = (props) => {
 
     try {
       const response = await fetch(
-        `http://localhost:3002/blogPosts/${_id}/uploadCover/`,
+        `${process.env.REACT_APP_BE_URL}/blogPosts/${_id}/uploadCover`,
         {
           body: formData,
           method: "POST",
@@ -58,7 +58,7 @@ const BlogItem = (props) => {
     }
     try {
       const response = await fetch(
-        `http://localhost:3002/blogPosts/${_id}/comments`,
+        `${process.env.REACT_APP_BE_URL}/blogPosts/${_id}/comments`,
         {
           method: "POST",
           headers: {
@@ -77,7 +77,7 @@ const BlogItem = (props) => {
   const deleteComment = async (commentId) => {
     try {
       await fetch(
-        `http://localhost:3002/blogPosts/${_id}/comments/${commentId}`,
+        `${process.env.REACT_APP_BE_URL}/blogPosts/${_id}/comments/${commentId}`,
         {
           method: "DELETE",
         }
