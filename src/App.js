@@ -5,15 +5,20 @@ import Home from "./views/home/Home"
 import Blog from "./views/blog/Blog"
 import NewBlogPost from "./views/new/New"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import Login from "./components/login/Login"
+import Register from "./components/login/register"
 
 function App() {
   return (
     <Router>
       <NavBar />
+
       <Routes>
-        <Route path="/" exact element={<Home />} />
+        <Route path="/" exact element={<Login />} />
+        <Route path="/register" exact element={<Register />} />
+        {/* <Route path="/" exact element={<Home />} />
         <Route path="/blogPosts/:id" element={<Blog />} />
-        <Route path="/new" element={<NewBlogPost />} />
+        <Route path="/new" element={<NewBlogPost />} /> */}
       </Routes>
       <Footer />
     </Router>
