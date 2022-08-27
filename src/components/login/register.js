@@ -1,53 +1,96 @@
-import React, { useState } from "react"
+import React, { useReducer } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import "./login.css"
+const initialState = {
+  name: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  avatarFile: null,
+  fileError: false,
+  matchedPassword: true,
+}
+const registerReducer = (state, action) => {
+  const { type, fieldName, payload } = action
+  switch (type) {
+    case "field": {
+      return {
+        ...state,
+        [fieldName]: payload,
+        matchedPassword: true,
+      }
+    }
+    case "file": {
+      return {
+        ...state,
+        fileError: false,
+        avatarFile: payload,
+      }
+    }
+    case "fileError": {
+      return {
+        ...state,
+        fileError: true,
+      }
+    }
+    case "matchedPassword": {
+      return {
+        ...state,
+        matchedPassword: false,
+      }
+    }
+  }
+}
+
 const Register = () => {
   const navigate = useNavigate()
-  const [fileError, setFileError] = useState(false)
-  const [matchedPassword, setMatchedPassword] = useState(true)
-  const [newAuthor, setNewAuthor] = useState({
-    name: "",
-    email: "",
-    password: "",
-    avatarFile: null,
-    confirmPassword: "",
-  })
-  const { name, email, password, confirmPassword, avatarFile } = newAuthor
-  let productFormData = new FormData()
-  productFormData.append("name", name)
-  productFormData.append("email", email)
-  productFormData.append("password", password)
-  productFormData.append("avatar", avatarFile)
+  const [state, dispatch] = useReducer(registerReducer, initialState)
+
+  const {
+    name,
+    email,
+    password,
+    confirmPassword,
+    avatarFile,
+    matchedPassword,
+    fileError,
+  } = state
+  let authorFormData = new FormData()
+  authorFormData.append("name", name)
+  authorFormData.append("email", email)
+  authorFormData.append("password", password)
+  authorFormData.append("avatar", avatarFile)
 
   const onFileChange = (e) => {
-    console.log(e.target.files[0])
     if (e.target && e.target.files[0] && e.target.files[0].size < 1000000) {
-      setFileError(false)
-      setNewAuthor({ ...newAuthor, avatarFile: e.target.files[0] })
+      dispatch({
+        type: "file",
+        payload: e.target.files[0],
+      })
     } else {
-      setFileError(true)
+      dispatch({ type: "fileError" })
       return
     }
   }
   const onSetNewAuthor = (e) => {
-    setMatchedPassword(true)
-    setNewAuthor({
-      ...newAuthor,
-      [e.target.name]: e.target.value,
+    dispatch({
+      type: "field",
+      payload: e.target.value,
+      fieldName: e.target.name,
     })
   }
 
   const createNewAuthor = async (e) => {
     e.preventDefault()
-    const { confirmPassword, ...rest } = newAuthor
+    const { confirmPassword, ...rest } = state
     if (password !== confirmPassword) {
-      setMatchedPassword(false)
+      dispatch({ type: "matchedPassword" })
       return
     }
     const apiUrl = `${process.env.REACT_APP_APP_BE_URL}/register`
     const response = await fetch(apiUrl, {
       method: "POST",
-      body: JSON.stringify(rest),
+      body: authorFormData,
     })
     if (response.ok) {
       navigate("/")
@@ -129,11 +172,11 @@ const Register = () => {
                       )}
                     </div>
                     <div className="mb-3">
-                      <label for="formFile" class="form-label">
+                      <label for="formFile" className="form-label">
                         Upload Avatar
                       </label>
                       <input
-                        class="form-control"
+                        className="form-control"
                         type="file"
                         id="formFile"
                         onChange={onFileChange}
